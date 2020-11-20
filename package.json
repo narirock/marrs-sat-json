@@ -1,0 +1,15 @@
+{
+  "name": "node-files-api",
+  "version": "1.0.0",
+  "description": "lista arquivos de um diretorio e possibilita sua leitura.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Renato Torres",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "xml2js": "^0.4.23"
+  }
+}
