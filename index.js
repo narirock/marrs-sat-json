@@ -1,4 +1,5 @@
 const express = require('express')
+require("dotenv").config();
 const app = express()
 const port = 3001
 
@@ -6,7 +7,7 @@ const port = 3001
 
 const fs = require('fs')
 const path = require('path')
-const directory = '/home/narirock/Downloads/SAT' //informar a pasta onde estão os arquivos
+const directory = process.env.DIRECTORY//informar a pasta onde estão os arquivos
 const directoryPath = path.join(directory);
 const xml2js = require('xml2js');
 const json = [];
