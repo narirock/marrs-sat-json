@@ -1,2 +1,5 @@
 /node_modules
 .env
+marrs-api-linux
+marrs-api-macos
+marrs-api-win.exe

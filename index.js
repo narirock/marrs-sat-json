@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require('express')
 const app = express()
 var request = require('request');
-const port = 3003
+const port = 3001
 
 /* libs para leitura de diretorios e arquivos */
 var watch = require('node-watch');
