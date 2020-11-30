@@ -27,29 +27,34 @@ watch(directory, { recursive: true }, function (evt, name) {
             //console.log(result.CFe)
             const json = {
                 "file": name,
-                "cNF": result.CFe.infCFe[0].ide[0].cNF[0],
-                "CNPJ": result.CFe.infCFe[0].ide[0].CNPJ[0],
+                "nserieSAT": result.CFe.infCFe[0].ide[0].nserieSAT[0],
+                "CNPJ": result.CFe.infCFe[0].emit[0].CNPJ[0],
                 "nCFe": result.CFe.infCFe[0].ide[0].nCFe[0],
                 "dEmi": result.CFe.infCFe[0].ide[0].dEmi[0],
                 "total": result.CFe.infCFe[0].total[0].vCFe[0]
             };
 
-            console.log(json);
-
-            var headersOpt = {
-                "content-type": "application/json",
-            };
-            request(
-                {
-                    method: 'post',
-                    url: process.env.MARRS_API + '/sat',
-                    form: json,
-                    headers: headersOpt,
-                    json: true,
-                }, function (error, response, body) {
-                    //Print the Response
-                    console.log(body);
-                });
+            //console.log(json);
+            try {
+                var headersOpt = {
+                    "content-type": "application/json",
+                };
+                request(
+                    {
+                        method: 'post',
+                        url: process.env.MARRS_API + '/sat',
+                        form: json,
+                        headers: headersOpt,
+                        json: true,
+                    }, function (error, response, body) {
+                        //Print the Response
+                        //console.log(error);
+                        //console.log(response);
+                        console.log(body);
+                    });
+            } catch (e) {
+                console.log(e);
+             }
         });
     } else {
         console.log('no xml');
@@ -62,11 +67,14 @@ app.get('/', (req, res) => {
         let date = req.query.date.split("-").join("/");
 
         fs.readdir(directoryPath + "/" + date, function (err, files) {
+
             if (err) {
                 return console.log('Unable to scan directory: ' + err);
             } 
+
+
             files.forEach(function (file) {
-                const xml = fs.readFileSync(directory + '/' + file, 'utf8');
+                const xml = fs.readFileSync(directory + '/' + date +'/' + file, 'utf8');
                 xml2js.parseString(xml, (err, result) => {
                     if(err) {
                         throw err;
@@ -74,16 +82,16 @@ app.get('/', (req, res) => {
                     if (file.includes('.xml')) {
                         var sat = {
                             'file': file,
-                            'cNF': result.CFe.infCFe[0].ide[0].cNF[0],
-                            "CNPJ": result.CFe.infCFe[0].ide[0].CNPJ[0],
+                            'nserieSAT': result.CFe.infCFe[0].ide[0].nserieSAT[0],
+                            "CNPJ": result.CFe.infCFe[0].emit[0].CNPJ[0],
                             'nCFe': result.CFe.infCFe[0].ide[0].nCFe[0],
                             'dEmi': result.CFe.infCFe[0].ide[0].dEmi[0],
                             'total': result.CFe.infCFe[0].total[0].vCFe[0]
                         };
 
                         if (req.query.number) {
-                            //console.log('validar numero ' + req.query.number);
-                            //console.log(result.CFe.infCFe[0].ide[0].nCFe[0]);
+                            console.log('validar numero ' + req.query.number);
+                            console.log(result.CFe.infCFe[0].ide[0].nCFe[0]);
                             if (req.query.number === result.CFe.infCFe[0].ide[0].nCFe[0]) {
                                 //console.log('achou');
                                 json.push(sat);
