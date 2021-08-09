@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -11,6 +12,18 @@ const path = require("path");
 const directory = process.env.DIRECTORY; //informar a pasta onde estão os arquivos
 const directoryPath = path.join(directory);
 const xml2js = require("xml2js");
+
+const fs2 = require('fs-extra')
+const file = './database.db'
+fs2.ensureFileSync(file)
+
+var sqlite3 = require("sqlite3").verbose();
+var db = new sqlite3.Database("./database.db");
+db.serialize(function () {
+  db.run("CREATE TABLE IF NOT EXISTS queue (info TEXT)");
+});
+
+var error_send = false;
 
 watch(directory, { recursive: true }, function (evt, name) {
   //console.log(evt);
@@ -50,32 +63,61 @@ watch(directory, { recursive: true }, function (evt, name) {
         customer: customer,
       };
 
-      try {
-        var headersOpt = {
-          "content-type": "application/json",
-          api_token: "uZpjdpNCIBVK1JcwC6WMvNPgoNEjnfa6",
-        };
-        request({
-          method: "post",
-          url: process.env.MARRS_API + "/sat",
-          form: json,
-          headers: headersOpt,
-          json: true,
-        })
-          .on("response", function (response) {
-            console.log(response.statusCode);
-          })
-          .on("error", function (err) {
-            console.log("Erro ao carregar" + err);
-          });
-      } catch (e) {
-        console.log(e);
-      }
+      send(json, name);
     });
   } else {
     //console.log("no xml");
   }
 });
+
+function resend() {
+  error_send = false;
+  var id = null;
+  db.each("SELECT rowid AS id, info FROM queue", function (err, row) {
+    console.log(row);
+    let json = JSON.parse(row.info);
+    id = row.id;
+    send(json, "resend");
+    var stmt = db.prepare("DELETE FROM queue where info LIKE ?");
+    stmt.run(row.info);
+    stmt.finalize();
+  });
+  console.log("teste resend");
+}
+
+function send(json, name) {
+  try {
+    var headersOpt = {
+      "content-type": "application/json",
+      api_token: "uZpjdpNCIBVK1JcwC6WMvNPgoNEjnfa6",
+    };
+    request({
+      method: "post",
+      url: process.env.MARRS_API + "/sat",
+      form: json,
+      headers: headersOpt,
+      json: true,
+    })
+      .on("response", function (response) {
+        console.log(response.statusCode);
+        if (error_send == true) {
+          //tentar reenviar fila
+          resend();
+        }
+      })
+      .on("error", function (err) {
+        error_send = true;
+
+        var stmt = db.prepare("INSERT INTO queue VALUES (?)");
+        stmt.run(JSON.stringify(json));
+        stmt.finalize();
+
+        console.log("Erro ao carregar, reenviado para fila");
+      });
+  } catch (e) {
+    console.log(e);
+  }
+}
 
 app.get("/", (req, res) => {
   const json = [];
