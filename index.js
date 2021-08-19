@@ -89,7 +89,7 @@ function send(json, name) {
   try {
     var headersOpt = {
       "content-type": "application/json",
-      "Api_token": "uZpjdpNCIBVK1JcwC6WMvNPgoNEjnfa6",
+      "api-token": "uZpjdpNCIBVK1JcwC6WMvNPgoNEjnfa6",
     };
     request({
       method: "post",
