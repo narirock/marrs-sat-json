@@ -97,23 +97,23 @@ function send(json, name) {
       form: json,
       headers: headersOpt,
       json: true,
-    })
-      .on("response", function (response) {
-        console.log(response.statusCode);
+    }, function (error, response, body) {
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        console.log(body);
         if (error_send == true) {
           //tentar reenviar fila
-          resend();
-        }
-      })
-      .on("error", function (err) {
+           resend();
+         }
+      } else {
         error_send = true;
 
         var stmt = db.prepare("INSERT INTO queue VALUES (?)");
         stmt.run(JSON.stringify(json));
         stmt.finalize();
 
-        console.log("Erro ao carregar, reenviado para fila");
-      });
+        console.log("Erro ao carregar, enviado para fila");
+      }
+    });
   } catch (e) {
     console.log(e);
   }
