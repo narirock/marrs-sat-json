@@ -105,6 +105,8 @@ function send(json, name) {
            resend();
          }
       } else {
+        console.log(response.statusCode);
+        console.log(body);
         error_send = true;
 
         var stmt = db.prepare("INSERT INTO queue VALUES (?)");
@@ -126,6 +128,7 @@ app.get("/", (req, res) => {
 
     fs.readdir(directoryPath + "/" + date, function (err, files) {
       if (err) {
+        res.send(JSON.stringify([]));
         return console.log("Unable to scan directory: " + err);
       }
 
