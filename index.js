@@ -98,7 +98,7 @@ function send(json, name) {
       headers: headersOpt,
       json: true,
     }, function (error, response, body) {
-      if (response.statusCode == 200 || response.statusCode == 204) {
+      if (response.statusCode == 200 || response.statusCode == 204 || response.statusCode == 201) {
         console.log(body);
         if (error_send == true) {
           //tentar reenviar fila
