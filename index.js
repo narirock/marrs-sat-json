@@ -102,8 +102,8 @@ function send(json, name) {
         console.log(body);
         if (error_send == true) {
           //tentar reenviar fila
-           resend();
-         }
+          resend();
+        }
       } else {
         console.log(response.statusCode);
         console.log(body);
@@ -171,6 +171,10 @@ app.get("/", (req, res) => {
               console.log(result.CFe.infCFe[0].ide[0].nCFe[0]);
               if (req.query.number === result.CFe.infCFe[0].ide[0].nCFe[0]) {
                 //console.log('achou');
+                json.push(sat);
+              }
+            } else if (req.query.customer) {
+              if (req.query.customer === customer) {
                 json.push(sat);
               }
             } else {
