@@ -142,6 +142,20 @@ app.get("/", (req, res) => {
             throw err;
           }
           if (file.includes(".xml")) {
+            //verificando se existem dados do comprador
+            let customer = "";
+            if ("dest" in result.CFe.infCFe[0]) {
+              for (props in result.CFe.infCFe[0].dest[0]) {
+                switch (props) {
+                  case "CPF":
+                    customer = result.CFe.infCFe[0].dest[0].CPF[0];
+                    break;
+                  case "CNPJ":
+                    customer = result.CFe.infCFe[0].dest[0].CNPJ[0];
+                    break;
+                }
+              }
+            }
             var sat = {
               file: file,
               nserieSAT: result.CFe.infCFe[0].ide[0].nserieSAT[0],
@@ -149,6 +163,7 @@ app.get("/", (req, res) => {
               nCFe: result.CFe.infCFe[0].ide[0].nCFe[0],
               dEmi: result.CFe.infCFe[0].ide[0].dEmi[0],
               total: result.CFe.infCFe[0].total[0].vCFe[0],
+              customer: customer,
             };
 
             if (req.query.number) {
