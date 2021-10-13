@@ -158,7 +158,7 @@ app.get("/", (req, res) => {
               }
             }
             var sat = {
-              file: file,
+              file: 'consulta ao servidor',
               nserieSAT: result.CFe.infCFe[0].ide[0].nserieSAT[0],
               CNPJ: result.CFe.infCFe[0].emit[0].CNPJ[0],
               nCFe: result.CFe.infCFe[0].ide[0].nCFe[0],
