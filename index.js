@@ -6,13 +6,14 @@ var request = require("request");
 const port = 3001;
 
 /* libs para leitura de diretorios e arquivos */
+
 var watch = require("node-watch");
 const fs = require("fs");
 const path = require("path");
 const directory = process.env.DIRECTORY; //informar a pasta onde estão os arquivos
 const directoryPath = path.join(directory);
 const xml2js = require("xml2js");
-
+/*
 const fs2 = require('fs-extra')
 const file = './database.db'
 fs2.ensureFileSync(file)
@@ -119,7 +120,7 @@ function send(json, name) {
   } catch (e) {
     console.log(e);
   }
-}
+}*/
 
 app.get("/", (req, res) => {
   const json = [];
